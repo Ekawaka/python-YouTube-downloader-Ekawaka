@@ -1,45 +1,37 @@
+import tkinter as tk # used to create a graphical user interface
 from pytube import YouTube
-import tkinter as tk 
-from tkinter import  filedialog # used to get directory of where to save the file.
 
-# To download youtube video  we need the url and the path where we are going to save the video.
-def download_video(url, save_path):
+def StartDownload(): # To create a function
 
-    # To handle errrors and exceptions we use try and except blocks with except Exception as e.
-    try:
-        yt = YouTube(url)
-        streams = yt.streams.filter(progressive=True, file_extension="mp4") # To download the highest resolution.
-        highest_res_stream = streams.get_highest_resolution()
-        highest_res_stream.download(output_path=save_path)
-        print("video downloaded successfully!")
+    try:    # Try to get the video and download
+        ytlink = link.get()
+        ytObject = YouTube(ytlink) 
+        video = ytObject.streams.get_highest_resolution() # To download the highest resolution.
+        video.download()
+    # To handle errrors and exceptions we use try and except blocks
+    except:
+        print("YouTube link is invalid")
+    print("Download Completed successfully!")
 
-    except Exception as e:
-        print(e)
+# To create Frame of the user interface
+root = tk.Tk()  # To initialize the frame
+root.geometry("500x300") # To set the size or resolution of the frame
+root.title("YouTube Downloader") # To set the title of the frame
 
-def open_file_dialog(): # To open the file where we are doing to save the video downloaded
-    folder = filedialog.askdirectory()
-    if folder:
-        print(f"selected folder: {folder}")
+# To add user interface elements
+label = tk.Label(root, text="Insert a youtube link") # To create where to be inserting the links
+label.pack(padx=10, pady=10) # This is to enable the element to show on the frame
 
-    return folder
+#To create link input
+url_var = tk.StringVar() # This is used to pass the url variable
+link = tk.Entry(root, textvariable=url_var)
+link.pack()
 
+#To create Download Button
+download = tk.Button(root, text = "Download", command=StartDownload) #This helps to put a text on the frame 
+#and pass a command function 
+download.pack(padx=10, pady=10) # To show the download Button on the frame
 
-if __name__ == "__main__": # To ensure you are directly running the python file before it executes anything that happens under this.
+# To run the app
+root.mainloop() # To ensure you are directly running the python file before it executes anything that happens under this.
     # This is because  there could be files that are reused by another file.
-    root = tk.Tk() #initialize the window i.e creating tkinter window to enable the use of the filedialog.
-    root.withdraw() #Hide the window so that it doesn't appear on the screen.
-
-    video_url = input("please enter a YouTube url: ")
-
-    save_dir = open_file_dialog()
-
-    if  save_dir:
-        print("started download....")
-        download_video(video_url, save_dir)
-        
-    else:
-        print("Invalid save location.")
-
-else:
-    print("progress tracking")
-    
